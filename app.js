@@ -98,8 +98,16 @@ function clearItems() {
   // localStorage.removeItem("list");
 }
 
-function deleteItem() {
-  console.log("Item Deleted");
+// delete function
+function deleteItem(e) {
+  const element = e.currentTarget.parentElement.parentElement;
+  const id = element.dataset.id;
+  list.removeChild(element);
+  if (list.children.length === 0) {
+    container.classList.remove("show-container");
+  }
+  displayAlert("empty list", "danger"); // remove the list
+  setBackToDefault(); // reset back to default state after resetting
 }
 
 function editItem() {
