@@ -64,7 +64,13 @@ function addItem(e) {
     // set back to default
     setBackToDefault();
   } else if (value && editFlag) {
+    editElement.innerHTML = value;
+    displayAlert("value changed to " + "success");
     console.log("editing item to the list");
+
+    // edit local storage
+    editLocalStorage(editID, value);
+    setBackToDefault();
   } else {
     displayAlert("please enter value", "danger");
   }
@@ -100,18 +106,32 @@ function clearItems() {
 
 // delete function
 function deleteItem(e) {
-  const element = e.currentTarget.parentElement.parentElement;
-  const id = element.dataset.id;
-  list.removeChild(element);
+  const currentItem = e.currentTarget.parentElement.parentElement;
+  const itemName =
+    e.currentTarget.parentElement.previousElementSibling.innerText;
+  console.log(itemName);
+  console.log("Deleted item from local storage");
+  list.removeChild(currentItem);
   if (list.children.length === 0) {
     container.classList.remove("show-container");
   }
-  displayAlert("empty list", "danger"); // remove the list
-  setBackToDefault(); // reset back to default state after resetting
+  setBackToDefault();
+  displayAlert(`${itemName} is deleted`, "danger");
+  // remove from local storage
+  // removeFromLocalStorage(id);}
 }
 
-function editItem() {
+// edit function
+function editItem(e) {
+  const currentItem = e.currentTarget.parentElement.parentElement;
   console.log("Edit Item");
+  // set edit item
+  editElement = e.currentTarget.parentElement.previousElementSibling;
+  // set form value
+  grocery.value = editElement.innerHTML;
+  editFlag = true;
+  editID = currentItem.dataset.id;
+  submitBtn.textContent = "edit";
 }
 
 // set back to default
@@ -126,4 +146,7 @@ function setBackToDefault() {
 function addToLocalStorage(id, value) {
   console.log("adding to local storage");
 }
+
+function addToLocalStorage(id) {}
+function editLocalStorage(id, value) {}
 // ****** SETUP ITEMS **********
