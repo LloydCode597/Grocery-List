@@ -171,6 +171,7 @@ function removeFromLocalStorage(id) {
   });
   localStorage.setItem("list", JSON.stringify(items));
 }
+
 function editLocalStorage(id, value) {
   let items = getLocalStorage();
   items = items.map(function (item) {
@@ -182,18 +183,15 @@ function editLocalStorage(id, value) {
 }
 
 function getLocalStorage() {
+  let items;
   if (localStorage.getItem("list")) {
-    let items = JSON.parse(localStorage.getItem("list"));
+    items = JSON.parse(localStorage.getItem("list"));
   } else {
-    let items = [];
+    items = [];
   }
+  return items;
 }
 
-// localStorage API
-// setItem
-// getItem
-// removeItem
-// save as string
 localStorage.setItem("orange", JSON.stringify(["item", "item2"]));
 const oranges = JSON.parse(localStorage.getItem("orange"));
 console.log(oranges);
@@ -212,33 +210,30 @@ function setupItems() {
 }
 
 function createListItem(id, value) {
-  const element = document.createElement("article");
+  // Check if the item is already in the list
+  const existingItem = document.querySelector(`[data-id="${id}"]`);
 
-  // add class to element
-  element.classList.add("grocery-item");
+  if (!existingItem) {
+    const element = document.createElement("article");
+    element.classList.add("grocery-item");
+    const attr = document.createAttribute("data-id");
+    attr.value = id;
+    element.setAttributeNode(attr);
+    element.innerHTML = `<p class="title">${value}</p>
+              <div class="btn-container">
+                <button type="button" class="edit-btn">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button type="button" class="delete-btn">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>`;
+    const deleteBtn = element.querySelector(".delete-btn");
+    deleteBtn.addEventListener("click", deleteItem);
+    const editBtn = element.querySelector(".edit-btn");
+    editBtn.addEventListener("click", editItem);
 
-  // add id to element
-  const attr = document.createAttribute("data-id");
-  attr.value = id;
-  element.setAttributeNode(attr);
-  element.innerHTML = `<p class="title">${value}</p>
-            <div class="btn-container">
-              <!-- edit btn -->
-              <button type="button" class="edit-btn">
-                <i class="fas fa-edit"></i>
-              </button>
-              <!-- delete btn -->
-              <button type="button" class="delete-btn">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-          `;
-  // add event listeners to both buttons;
-  const deleteBtn = element.querySelector(".delete-btn");
-  deleteBtn.addEventListener("click", deleteItem);
-  const editBtn = element.querySelector(".edit-btn");
-  editBtn.addEventListener("click", editItem);
-
-  // append child
-  list.appendChild(element);
+    // Append to the list only if it's not already there
+    list.appendChild(element);
+  }
 }
